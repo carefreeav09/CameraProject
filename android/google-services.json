@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "994699780117",
+    "project_id": "camera-app-test",
+    "storage_bucket": "camera-app-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994699780117:android:ef974eb96a8c15c63e6e1c",
+        "android_client_info": {
+          "package_name": "com.cameraproject.it"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "994699780117-jhpd16fe4kpe2avm38mud8btof1mqe1s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClXx9v1MIr9P2WbwVyJuUGEGojhagjKnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "994699780117-jhpd16fe4kpe2avm38mud8btof1mqe1s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "994699780117-1ve69r75vkf6rg80qthnfvva3geah7r8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "carefreeav.cameraproject.com"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
