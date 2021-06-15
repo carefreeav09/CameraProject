@@ -1,6 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, View, Button, Text} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Button,
+  Text,
+  DeviceEventEmitter,
+  Platform,
+} from 'react-native';
 import {
   RTCView,
   mediaDevices,
@@ -12,6 +21,47 @@ import {captureScreen, captureRef} from 'react-native-view-shot';
 
 const App = () => {
   const [localStream, setLocalStream] = useState();
+  const [state, setState] = React.useState({
+    remoteVideoViewSnapshotOption: null,
+    hideAllViewExceptRemoteRTCView: false,
+  });
+
+  React.useEffect(() => {
+    DeviceEventEmitter.addListener(
+      'WebRTCViewSnapshotResult',
+      onWebRTCViewSnapshotResult,
+    );
+
+    return () => {
+      DeviceEventEmitter.removeAllListeners('WebRTCViewSnapshotResult');
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onWebRTCViewSnapshotResult = data => {
+    let tempData = {...state, remoteVideoViewSnapshotOption: null};
+    setState(tempData);
+    if (data.error) {
+      console.log('failed', data.error);
+    }
+    if (data.file) {
+      console.log('saved file');
+    }
+  };
+
+  const onPressTakeSnapshot = async () => {
+    if (Platform.OS === 'android') {
+      console.log('i am here');
+      // --- check required permission, in the case of cameraRoll, you need: READ/WRITE EXTERNAL STORAGE permission
+      let snapshotOption = {
+        id: 'avusann', // --- use any value you think it's unique for each screenshot
+        saveTarget: 'cameraRoll',
+      };
+      let tempData = {...state, remoteVideoViewSnapshotOption: snapshotOption};
+      setState(tempData);
+    }
+  };
+
   const imageRef = React.useRef();
 
   const startLocalStream = async () => {
@@ -47,13 +97,15 @@ const App = () => {
 
     localStream &&
       setTimeout(() => {
-        captureRef(imageRef.current, {
-          format: 'jpg',
-          quality: 0.1,
-          result: 'base64',
-        }).then((data, error, result) => {
-          console.log(JSON.stringify(data), 'data ma k aauyo');
-        });
+        Platform.OS === 'android'
+          ? onPressTakeSnapshot()
+          : captureRef(imageRef.current, {
+              format: 'png',
+              quality: 1,
+              result: 'base64',
+            }).then((data, error, result) => {
+              console.log(JSON.stringify(data), 'data ma k aauyo');
+            });
       }, 3000);
   }, [localStream]);
 
@@ -66,6 +118,9 @@ const App = () => {
             style={styles.rtc}
             streamURL={localStream.toURL()}
             renderInContext={true}
+            snapshotOption={
+              localStream.toURL() ? state.remoteVideoViewSnapshotOption : null
+            }
           />
         )}
       </View>
